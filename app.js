@@ -1,6 +1,5 @@
 // Daniel Bauman
 // CS340 Project
-// Making a change!!
 
 var express = require('express');
 var app = express();
@@ -14,7 +13,7 @@ app.set('mysql', mysql);
 app.use(bodyParser.urlencoded({extended:true}));
 app.use('/static', express.static('public'));
 app.use('/', express.static('public'));
-app.set('port', 8012);
+app.set('port', 8013);
 
 function getCharacters(res, mysql, context, complete){
 	mysql.pool.query('SELECT hp_characters.id AS characterId, hp_characters.fname, hp_characters.lname, hp_schools.id AS schoolId, hp_schools.name AS schoolName, hp_houses.name AS houseName FROM hp_characters INNER JOIN hp_schools ON schoolId = hp_schools.id INNER JOIN hp_houses ON houseId = hp_houses.id', function(err, results, fields){
@@ -24,6 +23,30 @@ function getCharacters(res, mysql, context, complete){
 		}
 		// console.log("This is the getCharacters function.");
 		context.characters = results;
+		complete();
+	});
+}
+
+function getSchools(res, mysql, context, complete){
+	mysql.pool.query('SELECT hp_schools.id AS schoolId, hp_schools.name AS schoolName, hp_schools.population AS schoolPopulation, hp_schools.location AS schoolLocation FROM hp_schools', function(err, results, fields){
+		if(err){
+			res.write(JSON.stringify(err));
+			res.end();
+		}
+		// console.log("This is the getSchools function.");
+		context.schools = results;
+		complete();
+	});
+}
+
+function getHouses(res, mysql, context, complete){
+	mysql.pool.query('SELECT hp_houses.id AS houseId, hp_houses.name AS houseName, hp_houses.schoolId AS schoolId, hp_schools.name AS schoolName FROM hp_houses INNER JOIN hp_schools ON hp_houses.schoolId = hp_schools.id', function(err, results, fields){
+		if(err){
+			res.write(JSON.stringify(err));
+			res.end();
+		}
+		// console.log("This is the getHouses function.");
+		context.houses = results;
 		complete();
 	});
 }
@@ -39,6 +62,7 @@ function getSpells(res, mysql, context, complete){
 		complete();
 	});
 }
+
 
 // HOME ROUTE
 // Renders the home page
@@ -58,7 +82,19 @@ app.get('/', function(req, res){
 });
 
 app.get('/schools', function(req, res){
-	res.render('schools');
+	var context = {};
+	callbackCount = 0;
+	var mysql = req.app.get('mysql');
+	getSchools(res, mysql, context, complete);
+	getHouses(res, mysql, context, complete);
+
+	function complete(){
+		callbackCount++;
+		if(callbackCount >= 2){
+			// console.log(context);
+			res.render('schools', context);
+		}
+	}
 });
 
 app.get('/spells', function(req, res){
@@ -66,6 +102,7 @@ app.get('/spells', function(req, res){
 	callbackCount = 0;
 	var mysql = req.app.get('mysql');
 	getSpells(res, mysql, context, complete);
+
 	function complete(){
 		callbackCount++;
 		if(callbackCount >= 1){
