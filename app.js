@@ -1,4 +1,4 @@
-// Daniel Bauman
+// Daniel Bauman & Joel Herrick
 // CS340 Project
 
 var express = require('express');
@@ -13,118 +13,22 @@ app.set('mysql', mysql);
 app.use(bodyParser.urlencoded({extended:true}));
 app.use('/static', express.static('public'));
 app.use('/', express.static('public'));
-app.set('port', 8013);
+app.set('port', process.argv[2]);
 
-function getCharacters(res, mysql, context, complete){
-	mysql.pool.query('SELECT hp_characters.id AS characterId, hp_characters.fname, hp_characters.lname, hp_schools.id AS schoolId, hp_schools.name AS schoolName, hp_houses.name AS houseName FROM hp_characters INNER JOIN hp_schools ON schoolId = hp_schools.id INNER JOIN hp_houses ON houseId = hp_houses.id', function(err, results, fields){
-		if(err){
-			res.write(JSON.stringify(err));
-			res.end();
-		}
-		// console.log("This is the getCharacters function.");
-		context.characters = results;
-		complete();
-	});
-}
-
-function getSchools(res, mysql, context, complete){
-	mysql.pool.query('SELECT hp_schools.id AS schoolId, hp_schools.name AS schoolName, hp_schools.population AS schoolPopulation, hp_schools.location AS schoolLocation FROM hp_schools', function(err, results, fields){
-		if(err){
-			res.write(JSON.stringify(err));
-			res.end();
-		}
-		// console.log("This is the getSchools function.");
-		context.schools = results;
-		complete();
-	});
-}
-
-function getHouses(res, mysql, context, complete){
-	mysql.pool.query('SELECT hp_houses.id AS houseId, hp_houses.name AS houseName, hp_houses.schoolId AS schoolId, hp_schools.name AS schoolName FROM hp_houses INNER JOIN hp_schools ON hp_houses.schoolId = hp_schools.id', function(err, results, fields){
-		if(err){
-			res.write(JSON.stringify(err));
-			res.end();
-		}
-		// console.log("This is the getHouses function.");
-		context.houses = results;
-		complete();
-	});
-}
-
-function getSpells(res, mysql, context, complete){
-	mysql.pool.query('SELECT hp_spells.id AS spellId, hp_spells.name AS spellName, hp_spells.type AS spellType FROM hp_spells', function(err, results, fields){
-		if(err){
-			res.write(JSON.stringify(err));
-			res.end();
-		}
-		// console.log("This is the getSpells function.");
-		context.spells = results;
-		complete();
-	});
-}
+// Routes & functions files
+app.use('/characters', require('./characters.js'));
+app.use('/schools', require('./schools.js'));
+app.use('/spells', require('./spells.js'));
 
 
-// HOME ROUTE
-// Renders the home page
+
+
+// Home Route
 app.get('/', function(req, res){
-	var context = {};
-	callbackCount = 0;
-	var mysql = req.app.get('mysql');
-	getCharacters(res, mysql, context, complete);
-
-	function complete(){
-		callbackCount++;
-		if(callbackCount >= 1){
-			// console.log(context);
-			res.render('home', context);
-		}
-	}
+	res.render('home');
 });
 
-app.get('/schools', function(req, res){
-	var context = {};
-	callbackCount = 0;
-	var mysql = req.app.get('mysql');
-	getSchools(res, mysql, context, complete);
-	getHouses(res, mysql, context, complete);
 
-	function complete(){
-		callbackCount++;
-		if(callbackCount >= 2){
-			// console.log(context);
-			res.render('schools', context);
-		}
-	}
-});
-
-app.get('/spells', function(req, res){
-	var context = {};
-	callbackCount = 0;
-	var mysql = req.app.get('mysql');
-	getSpells(res, mysql, context, complete);
-
-	function complete(){
-		callbackCount++;
-		if(callbackCount >= 1){
-			// console.log(context);
-			res.render('spells', context);
-		}
-	}
-});
-
-app.post('/', function(req, res) {
-	var mysql = rez.app.get('mysql');
-	var sql = "INSERT INTO hp_characters (fname, lname, schoolId, houseId) VALUES (?, ?, ?, ?)";
-	var inserts = [req.body.fname, req.body.lname, req.body.schoolid, req.body.houseid];
-	sql = mysql.pool.query(sql, inserts, function(error, results, fields) {
-		if(error) {
-			res.write(JSON.stringify(error));
-			res.end();
-		} else {
-			res.redirect('/');
-		}
-	});
-});
 
 // ERROR ROUTES
 app.use(function(req,res){
