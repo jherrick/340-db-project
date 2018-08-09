@@ -20,7 +20,7 @@
 
 <h2>Add School</h2>
 <div>
-<form id="form">
+<form id="addschool" action="/schools" method="post">
    <label for="name">Name</label>
    <input type="text" id="name" name="name" placeholder="Hogwarts">
 
@@ -28,10 +28,10 @@
    <input type="number" id="type" name="population" placeholder="2000">
   
    <label for="Type">Geographic Location</label>
-   <input type="text" id="type" name="geographic_location" placeholder="France">
+   <input type="text" id="type" name="location" placeholder="France">
   
+   <input type="submit" value="Submit">
 </form>
-<input id="submit" type="submit" value="Submit">
 </div>
 
 <h2>Houses</h2>
@@ -53,7 +53,7 @@
 
 <h2>Add House</h2>
 <div>
-<form id="form">
+<form id="addhouse" action="/schools" method="post">
    <label for="name">Name</label>
    <input type="text" id="name" name="name" placeholder="Slytherin">
 
@@ -63,8 +63,7 @@
         <option value="{{schoolId}}">{{schoolName}}</option>
       {{/each}}
   </select>
-  
+  <input type="submit" value="Submit">  
 </form>
-<input id="submit" type="submit" value="Submit">
 </div>
 
