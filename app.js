@@ -112,6 +112,20 @@ app.get('/spells', function(req, res){
 	}
 });
 
+app.post('/', function(req, res) {
+	var mysql = rez.app.get('mysql');
+	var sql = "INSERT INTO hp_characters (fname, lname, schoolId, houseId) VALUES (?, ?, ?, ?)";
+	var inserts = [req.body.fname, req.body.lname, req.body.schoolid, req.body.houseid];
+	sql = mysql.pool.query(sql, inserts, function(error, results, fields) {
+		if(error) {
+			res.write(JSON.stringify(error));
+			res.end();
+		} else {
+			res.redirect('/');
+		}
+	});
+});
+
 // ERROR ROUTES
 app.use(function(req,res){
   res.status(404);
