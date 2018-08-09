@@ -30,8 +30,7 @@ app.get('/', function(req, res){
 
 
 
-
-// Error Routes
+// ERROR ROUTES
 app.use(function(req,res){
   res.status(404);
   res.render('404');
