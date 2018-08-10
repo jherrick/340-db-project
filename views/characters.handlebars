@@ -17,6 +17,8 @@
           <td>{{lname}}</td>
           <td>{{schoolName}}</td>
           <td>{{houseName}}</td>
+          <td><a href="/characters/{{characterId}}">Update</a></td>
+          <td><button onclick="deletePerson({{characterId}})">Delete</button></td>
         </tr>
       {{/each}}
    </tbody>
@@ -33,7 +35,7 @@
 
      <label for="school">School</label>
      <select name="schoolId">
-        {{#each characters}}
+        {{#each schools}}
          <option value="{{schoolId}}">{{schoolName}}</option>
         {{/each}}
      </select>
