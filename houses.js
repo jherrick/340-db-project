@@ -3,7 +3,7 @@ module.exports = function(){
 	var express = require('express');
 	var router = express.Router();
 
-	// Schools Functions
+	// Houses Functions
 	function getSchools(res, mysql, context, complete){
 		mysql.pool.query('SELECT hp_schools.id AS schoolId, hp_schools.name AS schoolName, hp_schools.population AS schoolPopulation, hp_schools.location AS schoolLocation FROM hp_schools', function(err, results, fields){
 			if(err){
@@ -26,7 +26,8 @@ module.exports = function(){
 		});
 	}
 
-	// Schools Routes
+
+	// Houses Routes
 	router.get('/', function(req, res){
 		var context = {};
 		callbackCount = 0;
@@ -37,27 +38,27 @@ module.exports = function(){
 		function complete(){
 			callbackCount++;
 			if(callbackCount >= 2){
-				res.render('schools', context);
+				res.render('houses', context);
 			}
 		}
 	});
 
+  // Add House
   router.post('/', function(req, res){
       //console.log(req.body)
       var mysql = req.app.get('mysql');
-      var sql = "INSERT INTO hp_schools (name, population, location) VALUES (?,?,?)";
-      var inserts = [req.body.name, req.body.population, req.body.location];
+      var sql = "INSERT INTO hp_houses (name, schoolId) VALUES (?,?)";
+      var inserts = [req.body.name, req.body.schoolId];
       sql = mysql.pool.query(sql,inserts,function(error, results, fields){
           if(error){
               console.log(JSON.stringify(error))
               res.write(JSON.stringify(error));
               res.end();
           }else{
-              res.redirect('/schools');
+              res.redirect('/houses');
           }
       });
-  });
-   
+  });    
 
 	return router;
 }();
