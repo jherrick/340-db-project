@@ -5,7 +5,7 @@ module.exports = function(){
 
 	// Characters Functions
 	function getCharacters(res, mysql, context, complete){
-	mysql.pool.query('SELECT hp_characters.id AS characterId, hp_characters.fname, hp_characters.lname, hp_schools.id AS schoolId, hp_schools.name AS schoolName, hp_houses.id AS houseId, hp_houses.name AS houseName FROM hp_characters INNER JOIN hp_schools ON schoolId = hp_schools.id INNER JOIN hp_houses ON houseId = hp_houses.id', function(err, results, fields){
+	mysql.pool.query('SELECT hp_characters.id AS characterId, hp_characters.fname, hp_characters.lname, hp_schools.id AS schoolId, hp_schools.name AS schoolName, hp_houses.id AS houseId, hp_houses.name AS houseName FROM hp_characters INNER JOIN hp_schools ON schoolId = hp_schools.id INNER JOIN hp_houses ON houseId = hp_houses.id GROUP BY characterId', function(err, results, fields){
 			if(err){
 				res.write(JSON.stringify(err));
 				res.end();

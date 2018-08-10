@@ -18,6 +18,7 @@ app.set('port', process.argv[2]);
 // Routes & functions files
 app.use('/characters', require('./characters.js'));
 app.use('/schools', require('./schools.js'));
+app.use('/houses', require('./houses.js'));
 app.use('/spells', require('./spells.js'));
 
 
