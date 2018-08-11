@@ -15,7 +15,7 @@ module.exports = function(){
 		});
 	}
 
-  function getPerson(res, mysql, context, id, complete){
+    function getPerson(res, mysql, context, id, complete){
       var sql = "SELECT id, fname, lname, houseId, schoolId FROM hp_characters WHERE id = ?";
       var inserts = [id];
       mysql.pool.query(sql, inserts, function(error, results, fields){
@@ -39,6 +39,17 @@ module.exports = function(){
 		});
 	}
 
+	function getHouses(res, mysql, context, complete){
+		mysql.pool.query('SELECT hp_houses.id AS houseId, hp_houses.name AS houseName FROM hp_houses', function(err, results, fields){
+			if(err){
+				res.write(JSON.stringify(err));
+				res.end();
+			}
+			context.houses = results;
+			complete();
+		});
+	}
+
 
 	// Characters Routes
 	router.get('/', function(req, res){
@@ -47,10 +58,11 @@ module.exports = function(){
 		var mysql = req.app.get('mysql');
 		getCharacters(res, mysql, context, complete);
 		getSchools(res, mysql, context, complete);
+		getHouses(res, mysql, context, complete);
 
 		function complete(){
 			callbackCount++;
-			if(callbackCount >= 2){
+			if(callbackCount >= 3){
 				res.render('characters', context);
 			}
 		}

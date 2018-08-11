@@ -15,6 +15,28 @@ module.exports = function(){
 		});
 	}
 
+	function getCharacters(res, mysql, context, complete){
+	mysql.pool.query('SELECT hp_characters.id AS characterId, hp_characters.fname, hp_characters.lname FROM hp_characters GROUP BY characterId', function(err, results, fields){
+			if(err){
+				res.write(JSON.stringify(err));
+				res.end();
+			}
+			context.characters = results;
+			complete();
+		});
+	}
+
+	function getCharSpells(res, mysql, context, complete){
+	mysql.pool.query('SELECT hc.fname AS fname, hc.lname AS lname, hs.name AS spell FROM hp_spells_chars hsc INNER JOIN hp_characters hc ON hsc.cid = hc.id INNER JOIN hp_spells hs ON hsc.pid = hs.id', function(err, results, fields){
+			if(err){
+				res.write(JSON.stringify(err));
+				res.end();
+			}
+			context.charspell = results;
+			complete();
+		});
+	}
+
 
 	// Spells Routes
 	router.get('/', function(req, res){
@@ -22,10 +44,12 @@ module.exports = function(){
 		callbackCount = 0;
 		var mysql = req.app.get('mysql');
 		getSpells(res, mysql, context, complete);
+		getCharacters(res, mysql, context, complete);
+		getCharSpells(res, mysql, context, complete);
 
 		function complete(){
 			callbackCount++;
-			if(callbackCount >= 1){
+			if(callbackCount >= 3){
 				res.render('spells', context);
 			}
 		}
@@ -48,7 +72,21 @@ module.exports = function(){
       });
   });   
 
-
+  // Add char / spell association
+  router.post('/charspells', function(req, res){
+      var mysql = req.app.get('mysql');
+      var sql = "INSERT INTO hp_spells_chars (cid, pid) VALUES (?,?)";
+      var inserts = [req.body.characterId, req.body.spellId];
+      sql = mysql.pool.query(sql,inserts,function(error, results, fields){
+          if(error){
+              console.log(JSON.stringify(error))
+              res.write(JSON.stringify(error));
+              res.end();
+          }else{
+              res.redirect('/spells');
+          }
+      });
+  });   
 
 	return router;
 }();

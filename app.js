@@ -21,14 +21,10 @@ app.use('/schools', require('./schools.js'));
 app.use('/houses', require('./houses.js'));
 app.use('/spells', require('./spells.js'));
 
-
-
-
 // Home Route
 app.get('/', function(req, res){
 	res.render('home');
 });
-
 
 
 // ERROR ROUTES
