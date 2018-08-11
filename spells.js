@@ -27,7 +27,7 @@ module.exports = function(){
 	}
 
 	function getCharSpells(res, mysql, context, complete){
-	mysql.pool.query('SELECT hc.fname AS fname, hc.lname AS lname, hs.name AS spell FROM hp_spells_chars hsc INNER JOIN hp_characters hc ON hsc.cid = hc.id INNER JOIN hp_spells hs ON hsc.pid = hs.id', function(err, results, fields){
+	mysql.pool.query('SELECT hsc.cid AS cid, hsc.pid AS pid, hc.fname AS fname, hc.lname AS lname, hs.name AS spell FROM hp_spells_chars hsc INNER JOIN hp_characters hc ON hsc.cid = hc.id INNER JOIN hp_spells hs ON hsc.pid = hs.id', function(err, results, fields){
 			if(err){
 				res.write(JSON.stringify(err));
 				res.end();
@@ -41,6 +41,7 @@ module.exports = function(){
 	// Spells Routes
 	router.get('/', function(req, res){
 		var context = {};
+		context.jsscripts = ["deleteChar.js"];
 		callbackCount = 0;
 		var mysql = req.app.get('mysql');
 		getSpells(res, mysql, context, complete);
@@ -86,7 +87,26 @@ module.exports = function(){
               res.redirect('/spells');
           }
       });
-  });   
+  });  
+
+  //delete char spell association
+    router.delete('/pid/:pid/cid/:cid', function(req, res){
+        //console.log(req) //I used this to figure out where did pid and cid go in the request
+        console.log(req.params.pid)
+        console.log(req.params.cid)
+        var mysql = req.app.get('mysql');
+        var sql = "DELETE FROM hp_spells_chars WHERE pid = ? AND cid = ?";
+        var inserts = [req.params.pid, req.params.cid];
+        sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.status(400); 
+                res.end(); 
+            }else{
+                res.status(202).end();
+            }
+        })
+    }) 
 
 	return router;
 }();

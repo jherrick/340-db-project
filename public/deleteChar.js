@@ -10,7 +10,7 @@ function deleteChar(id){
 
 function deleteCharSpell(pid, cid){
   $.ajax({
-      url: '/spells/charspells/pid/' + pid + '/cid/' + cid,
+      url: '/spells/pid/' + pid + '/cid/' + cid,
       type: 'DELETE',
       success: function(result){
           if(result.responseText != undefined){
