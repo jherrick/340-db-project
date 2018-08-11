@@ -2,12 +2,14 @@
 
   <table id="table" border="1">
      <thead>
+       <th>ID</th>
        <th>Name</th>
        <th>School</th>
      </thead>
      <tbody>
         {{#each houses}}
           <tr>
+            <td>{{houseId}}</td>
             <td>{{houseName}}</td>
             <td>{{schoolName}}</td>
           </tr>

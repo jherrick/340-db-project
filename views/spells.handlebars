@@ -3,12 +3,14 @@
 
 <table id="table" border="1">
    <thead>
+     <th>ID</th>
      <th>Name</th>
      <th>Type</th>
    </thead>
    <tbody>
       {{#each spells}}
         <tr>
+          <td>{{spellId}}</td>
           <td>{{spellName}}</td>
           <td>{{spellType}}</td>
         </tr>
