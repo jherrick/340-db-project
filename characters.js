@@ -52,6 +52,7 @@ module.exports = function(){
 
 
 	// Characters Routes
+	// Main Characters page
 	router.get('/', function(req, res){
 		var context = {};
 		callbackCount = 0;
@@ -68,6 +69,7 @@ module.exports = function(){
 		}
 	});
 
+	// Insert a Character
   router.post('/', function(req, res){
       //console.log(req.body)
       var mysql = req.app.get('mysql');
@@ -84,6 +86,7 @@ module.exports = function(){
       });
   });
 
+  // Display one character to be updated
   router.get('/:id', function(req, res){
       callbackCount = 0;
       var context = {};
@@ -91,13 +94,33 @@ module.exports = function(){
       var mysql = req.app.get('mysql');
       getPerson(res, mysql, context, req.params.id, complete);
       getSchools(res, mysql, context, complete);
+      getHouses(res, mysql, context, complete);
       function complete(){
           callbackCount++;
-          if(callbackCount >= 2){
+          if(callbackCount >= 3){
               res.render('update-person', context);
           }
       }
   });
+
+  // Update a Character
+  router.put('/:id', function(req, res){
+    var mysql = req.app.get('mysql');
+    // console.log(req.body)
+    // console.log(req.params.id)
+    var sql = "UPDATE hp_characters SET fname=?, lname=?, schoolId=?, houseId=? WHERE id=?";
+    var inserts = [req.body.fname, req.body.lname, req.body.school, req.body.house, req.params.id];
+    sql = mysql.pool.query(sql,inserts,function(error, results, fields){
+        if(error){
+            console.log(error)
+            res.write(JSON.stringify(error));
+            res.end();
+        }else{
+            res.status(200);
+            res.end();
+        }
+    });
+});
 
 
 
