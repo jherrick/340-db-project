@@ -42,6 +42,7 @@ module.exports = function(){
 		}
 	});
 
+  //add school
   router.post('/', function(req, res){
       //console.log(req.body)
       var mysql = req.app.get('mysql');
@@ -58,6 +59,23 @@ module.exports = function(){
       });
   });
    
+  // Add House
+  router.post('/houses', function(req, res){
+      //console.log(req.body)
+      var mysql = req.app.get('mysql');
+      var sql = "INSERT INTO hp_houses (name, schoolId) VALUES (?,?)";
+      var inserts = [req.body.name, req.body.schoolId];
+      sql = mysql.pool.query(sql,inserts,function(error, results, fields){
+          if(error){
+              console.log(JSON.stringify(error))
+              res.write(JSON.stringify(error));
+              res.end();
+          }else{
+              res.redirect('/schools');
+          }
+      });
+  });    
+
 
 	return router;
 }();
