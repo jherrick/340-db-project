@@ -18,7 +18,7 @@
           <td>{{schoolName}}</td>
           <td>{{houseName}}</td>
           <td><a href="/characters/{{characterId}}">Update</a></td>
-          <td><button onclick="deletePerson({{characterId}})">Delete</button></td>
+          <td><button onclick="deleteChar({{characterId}})">Delete</button></td>
         </tr>
       {{/each}}
    </tbody>
@@ -51,19 +51,6 @@
 
 </div>
 
-
-<h1>Delete Character</h1>
-<div>
-  <form id="form">
-     <label for="character">Character</label>
-       <select name="character">
-           {{#each characters}}
-            <option value="{{id}}">{{fname}} {{lname}}</option>
-           {{/each}}
-       </select>
-  </form>
-  <input id="submit" type="submit" value="Submit" onclick="deleteCharacter()">
-</div>
 
 <h1>Filter Characters</h1>
 
