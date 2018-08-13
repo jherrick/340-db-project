@@ -1,22 +1,22 @@
 <html>
-<h1>Update {{person.fname}} {{person.lname}}:</h1>
-<form id="update-person" action="/characters" method="post">
-    First name: <input type="text" name="fname" value="{{person.fname}}"><br>
-    Last name: <input type="text" name="lname" value="{{person.lname}}"><br>
-    School: <select name="school" id="school-selector"> 
-			        {{#each schools}}
-			        	<option value="{{schoolId}}">{{schoolName}}</option>
-			        {{/each}}
-    				</select><br>
+    <h1>Update {{person.fname}} {{person.lname}}:</h1>
+    <form id="update-person" action="/characters" method="post">
+        First name: <input type="text" name="fname" value="{{person.fname}}"><br>
+        Last name: <input type="text" name="lname" value="{{person.lname}}"><br>
+        School: <select name="school" id="school-selector"> 
+    		        {{#each schools}}
+    		        	<option value="{{schoolId}}">{{schoolName}}</option>
+    		        {{/each}}
+        		</select><br>
 
-    House: <select name="house" id="house-selector">
-    					{{#each houses}}
-    						<option value="{{houseId}}">{{houseName}}</option>
-    					{{/each}}
-    			 </select><br>
-    <!-- House: <input type="number" name="age" value="{{person.age}}"><br> -->
-</form>
-<button onclick="updatePerson({{person.id}})">Update</button>
-<script defer>selectSchool({{person.schoolId}});</script>
-<script defer>selectHouse({{person.HouseId}});</script>
+        House: <select name="house" id="house-selector">
+    				{{#each houses}}
+    					<option value="{{houseId}}">{{houseName}}</option>
+    				{{/each}}
+        	   </select><br>
+    </form>
+
+    <button onclick="updatePerson({{person.id}})">Update</button>
+    <script defer>selectSchool({{person.schoolId}});</script>
+    <script defer>selectHouse({{person.houseId}});</script>
 </html>

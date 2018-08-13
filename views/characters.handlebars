@@ -52,20 +52,18 @@
 </div>
 
 
-<h1>Filter Characters</h1>
+<form id='filter_people' action='' method=''>
+    <label> Filter by school </label>
+    <select id='school_filter' name="school"> 
+        {{#each schools}}
+          <option value="{{schoolId}}">{{schoolName}}</option>
+        {{/each}}
+    </select>
+    <input type="button" value="Filter" onclick="filterPeopleBySchool()">
+</form>
 
-  <form id="filter_chars">
-     <label for="school">School</label>
-     <select name="school">
-         {{#each characters}}
-          <option value="{{id}}">{{schoolName}}</option>
-         {{/each}}
-     </select>
-     <input type="button" value="Filter" onclick="filterCharacters()">
-  </form>
-
-  <form id="search_chars">
+<!--   <form id="search_chars">
      <label for="search">Search</label>
      <input type="text" id="search" name="search" placeholder="Harry">
      <input type="submit" value="Search" onclick="search()">   
-  </form>
+  </form> -->
