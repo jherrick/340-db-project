@@ -50,6 +50,20 @@ module.exports = function(){
 		});
 	}
 
+  function getPeopleBySchool(req, res, mysql, context, complete){
+    var query = "SELECT id, fname, lname, hp_schools.name FROM hp_characters INNER JOIN hp_schools ON hp_characters.schoolId = hp_schools.id INNER JOIN hp_houses ON hp_characters.houseId = hp_houses.id WHERE schoolId = ? GROUP BY hp_characters.id";
+    console.log(req.params);
+    var inserts = [req.params.school];
+    mysql.pool.query(query, inserts, function(error, results, fields){
+          if(error){
+              res.write(JSON.stringify(error));
+              res.end();
+          }
+          context.characters = results;
+          complete();
+      });
+  }
+
 
 	// Characters Routes
 	// Main Characters page
@@ -91,7 +105,7 @@ module.exports = function(){
   router.get('/:id', function(req, res){
       callbackCount = 0;
       var context = {};
-      context.jsscripts = ["selectedplanet.js", "updateperson.js"];
+      context.jsscripts = ["selectedhouse.js","selectedschool.js","updateperson.js"];
       var mysql = req.app.get('mysql');
       getPerson(res, mysql, context, req.params.id, complete);
       getSchools(res, mysql, context, complete);
@@ -138,6 +152,23 @@ module.exports = function(){
             }
         })
     })
+
+  /*Display all people from a given school.*/
+  router.get('/filter/:school', function(req, res){
+      var callbackCount = 0;
+      var context = {};
+      context.jsscripts = ["deleteChar.js","filterpeople.js","searchpeople.js"];
+      var mysql = req.app.get('mysql');
+      getPeopleBySchool(req,res, mysql, context, complete);
+      getSchools(res, mysql, context, complete);
+      function complete(){
+          callbackCount++;
+          if(callbackCount >= 2){
+              res.render('characters', context);
+          }
+
+      }
+  });
 
 
 	return router;
