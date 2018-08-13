@@ -51,8 +51,8 @@ module.exports = function(){
 	}
 
   function getPeopleBySchool(req, res, mysql, context, complete){
-    var query = "SELECT id, fname, lname, hp_schools.name FROM hp_characters INNER JOIN hp_schools ON hp_characters.schoolId = hp_schools.id INNER JOIN hp_houses ON hp_characters.houseId = hp_houses.id WHERE schoolId = ? GROUP BY hp_characters.id";
-    console.log(req.params);
+    var query = "SELECT hp_characters.id AS characterId, hp_characters.fname, hp_characters.lname, hp_schools.id AS schoolId, hp_schools.name AS schoolName, hp_houses.id AS houseId, hp_houses.name AS houseName FROM hp_characters INNER JOIN hp_schools ON schoolId = hp_schools.id INNER JOIN hp_houses ON houseId = hp_houses.id WHERE hp_schools.id = ?";
+    // console.log(req.params);
     var inserts = [req.params.school];
     mysql.pool.query(query, inserts, function(error, results, fields){
           if(error){
@@ -69,7 +69,7 @@ module.exports = function(){
 	// Main Characters page
 	router.get('/', function(req, res){
 		var context = {};
-		context.jsscripts = ["deleteChar.js"];
+		context.jsscripts = ["deleteChar.js", "filterpeople.js", "searchpeople.js"];
 		callbackCount = 0;
 		var mysql = req.app.get('mysql');
 		getCharacters(res, mysql, context, complete);
